@@ -1,55 +1,67 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { register, logIn, logOut, refreshUser } from './operations';
+import { fetchCurrentUser, logIn, logOut, register } from './operations';
+import { toast } from 'react-hot-toast';
 
 const initialState = {
-  user: { name: '', email: '' },
-  token: '',
+  user: { name: null, email: null },
+  token: null,
   isLoggedIn: false,
-  isFetchingCurrentUser: false,
+  isRefreshing: false,
   error: null,
 };
 
-export const authSlice = createSlice({
+const authSlice = createSlice({
   name: 'auth',
   initialState,
-  extraReducers: builder =>
+  extraReducers: builder => {
     builder
-      .addCase(register.pending, state => {
-        state.error = null;
-      })
       .addCase(register.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.token = action.payload.token;
         state.isLoggedIn = true;
+        state.error = null;
+        toast.success('Registration successfull!');
       })
       .addCase(register.rejected, (state, action) => {
         state.error = action.payload;
-      })
-      .addCase(logIn.pending, state => {
-        state.error = null;
+        toast.error(`Something went wrong. Error message: ${state.error}`);
       })
       .addCase(logIn.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.token = action.payload.token;
         state.isLoggedIn = true;
+        state.error = null;
+        toast.success('Login successfull!');
       })
       .addCase(logIn.rejected, (state, action) => {
         state.error = action.payload;
+        toast.error(`Something went wrong. Error message: ${state.error}`);
       })
       .addCase(logOut.fulfilled, (state, action) => {
-        state.user = { name: '', email: '' };
-        state.token = '';
+        state.user = { name: null, email: null };
+        state.token = null;
         state.isLoggedIn = false;
+        state.error = null;
+        toast.success('Logout successfull!');
       })
-      .addCase(refreshUser.pending, state => {
-        state.isFetchingCurrentUser = true;
+      .addCase(logOut.rejected, (state, action) => {
+        state.error = action.payload;
+        toast.error(`Something went wrong. Error message: ${state.error}`);
       })
-      .addCase(refreshUser.fulfilled, (state, action) => {
+      .addCase(fetchCurrentUser.pending, (state, action) => {
+        state.isRefreshing = true;
+      })
+      .addCase(fetchCurrentUser.fulfilled, (state, action) => {
         state.user = action.payload;
         state.isLoggedIn = true;
-        state.isFetchingCurrentUser = false;
+        state.isRefreshing = false;
+        state.error = null;
       })
-      .addCase(refreshUser.rejected, state => {
-        state.isFetchingCurrentUser = false;
-      }),
+      .addCase(fetchCurrentUser.rejected, (state, action) => {
+        state.error = action.payload;
+        state.isRefreshing = false;
+      });
+  },
 });
+
+export const authReducer = authSlice.reducer;

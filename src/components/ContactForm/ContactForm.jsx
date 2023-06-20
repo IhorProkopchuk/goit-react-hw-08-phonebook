@@ -9,14 +9,14 @@ const ContactForm = () => {
   const contacts = useSelector(selectContacts);
 
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [number, setNumber] = useState('');
 
   const handleChange = event => {
     const { name, value } = event.target;
     if (name === 'name') {
       setName(value);
-    } else if (name === 'phone') {
-      setPhone(value);
+    } else if (name === 'number') {
+      setNumber(value);
     }
   };
 
@@ -26,25 +26,25 @@ const ContactForm = () => {
 
     const existingContact = contacts.find(
       contact => contact.name.toLowerCase() === name.toLowerCase());
-    const existingNumber = contacts.find(contact => contact.phone === phone);
+    const existingNumber = contacts.find(contact => contact.number === number);
 
     if (existingContact) {
       alert(`${name} is already in contacts.`);
       setName('');
-      setPhone('');
+      setNumber('');
       return;
     }
 
     if (existingNumber) {
-      alert(`The number ${phone} is already associated with another contact.`);
+      alert(`The number ${number} is already associated with another contact.`);
       setName('');
-      setPhone('');
+      setNumber('');
       return;
     }
 
-    dispatch(addContact({ name, phone }));
+    dispatch(addContact({ name, number }));
     setName('');
-    setPhone('');
+    setNumber('');
   };
 
   return (
@@ -68,11 +68,11 @@ const ContactForm = () => {
           <input
             className={styles.input}
             type="tel"
-            name="phone"
+            name="number"
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
             required
-            value={phone}
+            value={number}
             onChange={handleChange}
           />
         </label>
