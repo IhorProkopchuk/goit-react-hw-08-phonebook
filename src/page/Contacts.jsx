@@ -13,13 +13,13 @@ const Contacts = () => {
   }, [dispatch]);
 
   return (
-    <>
+    <div style={{maxWidth: '960px', margin: '0 auto', padding: '0 16px', backgroundColor: '#e7ecf2', borderRadius: '4px', boxShadow: '2px 2px 4px rgba(0,0,0,.5)'}}>
       <h1>Phonebook</h1>
       <ContactForm />
       <h2>Contacts</h2>
       <Filter />
       <ContactList />
-    </>
+    </div>
   );
 };
 
